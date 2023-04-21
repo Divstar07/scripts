@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed;
     public float jumpForce;
     public float gravityModifier;
-    private int jumpCount = 2;
+    public int jumpCount;
 
 
 
@@ -18,6 +18,8 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        jumpCount = 2;
+        groundCheck = GameObject.Find("Player").GetComponent<groundCheck>();
         // Get the rigid body component
         playerRb = GetComponent<Rigidbody>();
         // Modify the gravity based on the gravity modifier
@@ -30,7 +32,6 @@ public class PlayerController : MonoBehaviour
         // Get horizontal input
         float verticalInput = Input.GetAxis("Vertical");
         float horizontalInput = Input.GetAxis("Horizontal");
-        //playerRb.velocity = new Vector3(horizontalInput, playerRb.velocity.y, verticalInput);
         Vector3 locVel = transform.InverseTransformDirection(playerRb.velocity);
         locVel.x = horizontalInput;
         locVel.z = verticalInput;
@@ -38,28 +39,21 @@ public class PlayerController : MonoBehaviour
 
 
 
-        //playerRb.velocity.Normalize();
-        //playerRb.velocity = transform.TransformDirection(playerRb.velocity);
-       // playerRb.velocity = playerRb.velocity.normalized;
-
+       
 
 
         // Make the player jump
-        if (Input.GetButtonDown("Jump") && groundCheck.isOnGround == true)
+        if (Input.GetButtonDown("Jump") && (groundCheck.isOnGround == true) && (jumpCount > 0))
         {
             playerRb.velocity = new Vector3(playerRb.velocity.x, jumpForce, playerRb.velocity.y);
             jumpCount--;
         }
        
-
-    }
-
-   /* private void OnCollisionEnter(Collision collision)
-    {
-        if(collision.gameObject.CompareTag("Ground"))
+        if (groundCheck.isOnGround == true)
         {
             jumpCount = 2;
-            //isOnGround = true;
         }
-    } */
+    }
+
+ 
 }
