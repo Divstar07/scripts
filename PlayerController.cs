@@ -1,3 +1,4 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,13 +10,11 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed;
     public float jumpForce;
     public float gravityModifier;
-    public int jumpCount;
-    public bool canJump;
-    //private bool isOnGround;
+    private int jumpCount = 2;
+    private bool isOnGround;
     // Start is called before the first frame update
     void Start()
     {
-        jumpCount = 2;
         // Get the rigid body component
         playerRb = GetComponent<Rigidbody>();
         // Modify the gravity based on the gravity modifier
@@ -26,32 +25,24 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         // Get horizontal input
-        float verticalInput = Input.GetAxis("Vertical");
-        float horizontalInput = Input.GetAxis("Horizontal");
-        // Move the player with respect to their own local Coordinates
-        Vector3 locVel = transform.InverseTransformDirection(playerRb.velocity);
-        locVel.x = horizontalInput;
-        locVel.z = verticalInput;
-        playerRb.velocity = transform.TransformDirection(locVel) * moveSpeed;
-
+        float verticalInput = Input.GetAxis("Vertical") * moveSpeed;
+        float horizontalInput = Input.GetAxis("Horizontal") * moveSpeed;
+        playerRb.velocity = new Vector3(horizontalInput, playerRb.velocity.y, verticalInput);
+        playerRb.velocity = transform.TransformDirection(playerRb.velocity);
 
         // Make the player jump
-        if (Input.GetButtonDown("Jump")  && canJump && (jumpCount > 0))
+        if (Input.GetButtonDown("Jump") && (jumpCount > 0) && isOnGround)
         {
-            playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            playerRb.velocity = new Vector3(playerRb.velocity.x, jumpForce, playerRb.velocity.y);
             jumpCount--;
         }
+
+
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        canJump = true;
-        jumpCount = 2;
-    }
-
-    private void OnCollisionExit(Collision collision)
-    {
-        canJump = false;
-
+            jumpCount = 2;
+        isOnGround = true;
     }
 }
