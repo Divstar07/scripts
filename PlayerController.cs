@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     private int jumpCount = 2;
     public bool isOnGround;
     public bool isJumping;
+    public bool canJump;
     public float speedReduction;
     public float origV;
     public float origH;
@@ -62,7 +63,7 @@ public class PlayerController : MonoBehaviour
         playerRb.velocity = transform.TransformDirection(playerRb.velocity);
 
         // Make the player jump
-        if (Input.GetButtonDown("Jump") && (jumpCount > 0) && isOnGround)
+        if (Input.GetButtonDown("Jump") && (jumpCount > 0) && canJump)
         {
             playerRb.velocity = new Vector3(playerRb.velocity.x, jumpForce, playerRb.velocity.y);
             jumpCount--;
@@ -87,7 +88,12 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        canJump = true;
             jumpCount = 2;
         isOnGround = true;
+    }
+    private void OnCollisionExit(Collision collision)
+    {
+        isOnGround = false;
     }
 }

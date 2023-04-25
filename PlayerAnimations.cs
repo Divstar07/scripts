@@ -21,6 +21,7 @@ public class PlayerAnimations : MonoBehaviour
         {
             playerAnim.SetTrigger("Jump");
         }
+       
         // if the player runs forward cue the running animation
         if (Input.GetAxis("Vertical") > 0.3 && (player.isOnGround))
         {
