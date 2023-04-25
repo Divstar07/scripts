@@ -49,6 +49,7 @@ public class PlayerController : MonoBehaviour
             moveSpeedH = origH;
         }
        
+	// If the player is moving backwards, set his vertical moveSpeed to 5
        if(Input.GetAxis("Vertical") < 0)
         {
             moveSpeedV = 5;
@@ -92,6 +93,8 @@ public class PlayerController : MonoBehaviour
             jumpCount = 2;
         isOnGround = true;
     }
+
+	
     private void OnCollisionExit(Collision collision)
     {
         isOnGround = false;
